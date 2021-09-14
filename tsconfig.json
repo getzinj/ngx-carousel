@@ -24,6 +24,7 @@
     ],
     "angularCompilerOptions": {
         "skipMetadataEmit" : false,
-        "skipTemplateCodegen": true
+        "skipTemplateCodegen": true,
+        "preserveWhitespaces": false
     }
 }
