@@ -1,2 +1,2 @@
-export { NgxCarouselModule } from './src/ngx-carousel.module';
-export { NgxCarousel, NgxCarouselStore } from './src/ngx-carousel/ngx-carousel.interface';
+export { NgxCarouselModule } from './projects/ngx-carousel/src/lib/ngx-carousel.module';
+export { NgxCarousel, NgxCarouselStore } from './projects/ngx-carousel/src/lib/ngx-carousel/ngx-carousel.interface';
