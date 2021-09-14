@@ -1,0 +1,54 @@
+:host {
+  display: block;
+  position: relative;
+}
+
+.ngxcarousel .ngxcarousel-inner {
+  position: relative;
+  overflow: hidden;
+}
+.ngxcarousel .ngxcarousel-inner .ngxcarousel-items {
+  white-space: nowrap;
+  position: relative;
+}
+
+.banner .ngxcarouselPointDefault .ngxcarouselPoint {
+  position: absolute;
+  width: 100%;
+  bottom: 20px;
+}
+.banner .ngxcarouselPointDefault .ngxcarouselPoint li {
+  background: rgba(255, 255, 255, 0.55);
+}
+.banner .ngxcarouselPointDefault .ngxcarouselPoint li.active {
+  background: white;
+}
+.banner .ngxcarouselPointDefault .ngxcarouselPoint li:hover {
+  cursor: pointer;
+}
+
+.ngxcarouselPointDefault .ngxcarouselPoint {
+  list-style-type: none;
+  text-align: center;
+  padding: 12px;
+  margin: 0;
+  white-space: nowrap;
+  overflow: auto;
+  box-sizing: border-box;
+}
+.ngxcarouselPointDefault .ngxcarouselPoint li {
+  display: inline-block;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  padding: 4px;
+  margin: 0 4px;
+  transition-timing-function: cubic-bezier(0.17, 0.67, 0.83, 0.67);
+  transition: 0.4s;
+}
+.ngxcarouselPointDefault .ngxcarouselPoint li.active {
+  background: #6b6b6b;
+  transform: scale(1.8);
+}
+.ngxcarouselPointDefault .ngxcarouselPoint li:hover {
+  cursor: pointer;
+}

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgxCarousel } from 'ngx-carousel';
+import { NgxCarousel } from '../../projects/ngx-carousel/src/public-api';
 
 @Component({
   selector: 'app-root',
@@ -7,19 +7,19 @@ import { NgxCarousel } from 'ngx-carousel';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  imgags: string[];
+  imgags: string[] | undefined;
 
   public carouselBannerItems: Array<any> = [];
-  public carouselBanner: NgxCarousel;
+  public carouselBanner: NgxCarousel | undefined;
 
   public carouselTileItems: Array<any> = [];
-  public carouselTile: NgxCarousel;
+  public carouselTile: NgxCarousel | undefined;
 
   public carouselTileOneItems: Array<any> = [];
-  public carouselTileOne: NgxCarousel;
+  public carouselTileOne: NgxCarousel | undefined;
 
   public carouselTileTwoItems: Array<any> = [];
-  public carouselTileTwo: NgxCarousel;
+  public carouselTileTwo: NgxCarousel | undefined;
 
   constructor() {}
 
@@ -163,7 +163,7 @@ export class AppComponent implements OnInit {
     this.carouselTileTwoLoad();
   }
 
-  onmoveFn(data) {
+  onmoveFn(data: unknown) {
     // console.log(data);
   }
 
@@ -172,7 +172,7 @@ export class AppComponent implements OnInit {
     if (len <= 4) {
       for (let i = len; i < len + 5; i++) {
         this.carouselBannerItems.push(
-          this.imgags[Math.floor(Math.random() * this.imgags.length)]
+          this.imgags?.[Math.floor(Math.random() * (this.imgags?.length ?? 0))]
         );
       }
     }
@@ -183,7 +183,7 @@ export class AppComponent implements OnInit {
     if (len <= 30) {
       for (let i = len; i < len + 15; i++) {
         this.carouselTileItems.push(
-          this.imgags[Math.floor(Math.random() * this.imgags.length)]
+          this.imgags?.[Math.floor(Math.random() * (this.imgags?.length ?? 0))]
         );
       }
     }
@@ -194,7 +194,7 @@ export class AppComponent implements OnInit {
     if (len <= 30) {
       for (let i = len; i < len + 15; i++) {
         this.carouselTileOneItems.push(
-          this.imgags[Math.floor(Math.random() * this.imgags.length)]
+          this.imgags?.[Math.floor(Math.random() * (this.imgags?.length ?? 0))]
         );
       }
     }
@@ -205,7 +205,7 @@ export class AppComponent implements OnInit {
     if (len <= 30) {
       for (let i = len; i < len + 15; i++) {
         this.carouselTileTwoItems.push(
-          this.imgags[Math.floor(Math.random() * this.imgags.length)]
+          this.imgags?.[Math.floor(Math.random() * (this.imgags?.length ?? 0))]
         );
       }
     }

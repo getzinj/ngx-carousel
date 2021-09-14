@@ -1,4 +1,4 @@
-export class NgxCarouselStore {
+export interface NgxCarouselStore {
   type: string;
   deviceType: DeviceType;
   classText: string;
@@ -22,21 +22,22 @@ export class NgxCarouselStore {
   isEnd: boolean;
   isFirst: boolean;
   isLast: boolean;
+  shouldSlide?: boolean;
 }
 export type DeviceType = 'xs' | 'sm' | 'md' | 'lg' | 'all';
 
-export class ItemsControl {
+export interface ItemsControl {
   start: number;
   end: number;
 }
 
-export class Touch {
+export interface Touch {
   active?: boolean;
   swipe: string;
   velocity: number;
 }
 
-export class Transfrom {
+export interface Transfrom {
   xs: number;
   sm: number;
   md: number;
@@ -44,7 +45,7 @@ export class Transfrom {
   all: number;
 }
 
-export class NgxCarousel {
+export interface NgxCarousel {
   grid: Transfrom;
   slide?: number;
   speed?: number;

@@ -1,4 +1,4 @@
-import { NgxCarouselModule } from 'ngx-carousel';
+import { NgxCarouselModule } from '../../projects/ngx-carousel/src/public-api';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 

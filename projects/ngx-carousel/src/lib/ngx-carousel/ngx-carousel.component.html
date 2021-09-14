@@ -1,18 +1,36 @@
-<div class="som">
-    <div class="ngxcarousel">
-        <div class="ngxcarousel-inner">
-            <div class="ngxcarousel-items">
-                <ng-content #itemss select="ngx-item"></ng-content>
-                <ng-content select="ngx-tile"></ng-content>
-            </div>
-            <div style="clear: both"></div>
-        </div>
-        <ng-content #left select=".leftRs" class="leftRs"></ng-content>
-        <ng-content #right select=".rightRs" class="rightRs"></ng-content>
+<!--<div class="som">-->
+<!--    <div class="ngxcarousel">-->
+<!--        <div class="ngxcarousel-inner">-->
+<!--            <div class="ngxcarousel-items">-->
+<!--                <ng-content #itemss select="ngx-item"></ng-content>-->
+<!--                <ng-content select="ngx-tile"></ng-content>-->
+<!--            </div>-->
+<!--            <div style="clear: both"></div>-->
+<!--        </div>-->
+<!--        <ng-content #left select=".leftRs" class="leftRs"></ng-content>-->
+<!--        <ng-content #right select=".rightRs" class="rightRs"></ng-content>-->
+<!--    </div>-->
+<!--    <div class="ngxcarouselPoint" *ngIf="userData.point">-->
+<!--        <ul>-->
+<!--            <li *ngFor="let i of Arr(data.pointNumbers).fill(1)"></li>-->
+<!--        </ul>-->
+<!--    </div>-->
+<!--</div>-->
+<div #ngxcarousel class="ngxcarousel">
+  <div #forTouch class="ngxcarousel-inner">
+    <div #ngxitems class="ngxcarousel-items">
+      <ng-content select="[NgxCarouselItem]"></ng-content>
     </div>
-    <div class="ngxcarouselPoint" *ngIf="userData.point">
-        <ul>
-            <li *ngFor="let i of Arr(data.pointNumbers).fill(1)"></li>
-        </ul>
-    </div>
+    <div style="clear: both"></div>
+  </div>
+  <ng-content select="[NgxCarouselPrev]"></ng-content>
+  <ng-content select="[NgxCarouselNext]"></ng-content>
+</div>
+<div #points *ngIf="userData.point.visible">
+  <ul class="ngxcarouselPoint">
+    <li #pointInner
+        *ngFor="let pointNumber of pointNumbers; let i=index"
+        [class.active]="i==pointers"
+        (click)="moveTo(i)"></li>
+  </ul>
 </div>

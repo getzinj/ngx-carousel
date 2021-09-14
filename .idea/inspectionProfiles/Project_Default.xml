@@ -2,5 +2,9 @@
   <profile version="1.0">
     <option name="myName" value="Project Default" />
     <inspection_tool class="TsLint" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="TypeScriptConfig" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="TypeScriptExplicitMemberType" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="TypeScriptFieldCanBeMadeReadonly" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="TypeScriptMissingConfigOption" enabled="true" level="ERROR" enabled_by_default="true" />
   </profile>
 </component>
