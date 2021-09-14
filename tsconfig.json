@@ -2,6 +2,7 @@
     "compilerOptions": {
         "baseUrl": ".",
         "declaration": true,
+    "importHelpers": true,
         "stripInternal": true,
         "experimentalDecorators": true,
         "strictNullChecks": true,

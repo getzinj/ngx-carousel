@@ -255,7 +255,7 @@ export class NgxCarouselComponent
     this.moveToSlide > -1 &&
       this.moveTo(changes.moveToSlide.currentValue);
     }
-    
+
 
   /* store data based on width of the screen for the carousel */
   private storeCarouselData(): void {
@@ -316,17 +316,17 @@ export class NgxCarouselComponent
       });
       hammertime.on('panend', (ev: any) => {
         // this.setStyle(this.carouselInner, 'transform', '');
-        if (_this.data.shouldSlide) {
+        if (this.data.shouldSlide) {
           this.data.touch.velocity = ev.velocity;
           this.data.touch.swipe === 'panright'
             ? this.carouselScrollOne(0)
             : this.carouselScrollOne(1);
         } else {
-           _this.data.dexVal = 0;
-           _this.data.touchTransform = _this.data.transform[_this.data.deviceType];
-           _this.setStyle(_this.carouselInner, 'transition', 'transform 324ms cubic-bezier(0, 0, 0.2, 1)');
-           var tran = _this.data.touchTransform * -1;
-           _this.setStyle(_this.carouselInner, 'transform', 'translate3d(' + tran + '%, 0px, 0px)');
+           this.data.dexVal = 0;
+           this.data.touchTransform = this.data.transform[this.data.deviceType];
+           this.setStyle(this.carouselInner, 'transition', 'transform 324ms cubic-bezier(0, 0, 0.2, 1)');
+           var tran = this.data.touchTransform * -1;
+           this.setStyle(this.carouselInner, 'transform', 'translate3d(' + tran + '%, 0px, 0px)');
         }
       });
       hammertime.on("hammer.input", function(ev) {
@@ -356,7 +356,7 @@ export class NgxCarouselComponent
       e === 'panleft'
         ? valt + this.data.touchTransform
         : this.data.touchTransform - valt;
-    
+
     this.data.shouldSlide = (ev > this.data.carouselWidth * 0.1);
 
     if (this.data.touchTransform > 0) {
@@ -395,7 +395,7 @@ export class NgxCarouselComponent
     const Nos = this.items.length - (this.data.items - this.data.slideItems);
     this.pointIndex = Math.ceil(Nos / this.data.slideItems);
     const pointers = [];
-    
+
     if (this.pointIndex > 1 || !this.userData.point.hideOnSingleSlide) {
       for (let i = 0; i < this.pointIndex; i++) {
         pointers.push(i);
