@@ -75,7 +75,7 @@ export class NgxCarouselComponent
   private pauseCarousel: boolean = false;
   private pauseInterval: any;
 
-  private carousel: any;
+  private carousel: HTMLElement | undefined;
   private carouselMain: any;
   private carouselInner: any;
   private carouselItems: any;
@@ -140,7 +140,7 @@ export class NgxCarouselComponent
       this.carouselScrollOne(1)
     );
 
-    this.carouselCssNode = this.renderer.createElement(this.carousel, 'style');
+    this.carouselCssNode = this.createStyleNode();
 
     this.storeCarouselData();
     this.carouselInterval();
@@ -166,8 +166,8 @@ export class NgxCarouselComponent
         `.${this.data.classText} .ngxcarouselPoint`
       );
 
-      const pointNode = this.renderer.createElement(this.carousel, 'style');
-      (this.renderer as any).createText(pointNode, datas);
+      const pointNode =  this.createStyleNode(datas);
+//      (this.renderer as any).createText(pointNode, datas);
     } else if (this.userData.point && this.userData.point.visible) {
       this.renderer.addClass(
         this.pointMain?.nativeElement,
@@ -319,10 +319,10 @@ export class NgxCarouselComponent
 
   /* this used to disable the scroll when it is not on the display */
   private onWindowScrolling(): void {
-    const top: number = this.carousel.offsetTop;
+    const top: number = this.carousel?.offsetTop ?? 0;
     const scrollY: number = window.scrollY;
     const heightt: number = window.innerHeight;
-    const carouselHeight: number = this.carousel.offsetHeight;
+    const carouselHeight: number = this.carousel?.offsetHeight ?? 0;
 
     if (
       top <= scrollY + heightt - carouselHeight / 4 &&
@@ -393,27 +393,27 @@ export class NgxCarouselComponent
   /* set the style of the carousel based the inputs data */
   private carouselSize(): void {
     this.data.classText = this.generateID();
-    let dism: string = '';
     const styleid: string = '.' + this.data.classText + ' > .ngxcarousel > .ngxcarousel-inner > .ngxcarousel-items >';
 
     if (this.userData.custom === 'banner') {
       this.renderer.addClass(this.carousel, 'banner');
     }
 
+    let dism: string = '';
     // if (this.userData.animation && this.userData.animation.animateStyles) {
     //   dism += `${styleid} .customAnimation {${this.userData.animation
     //     .animateStyles.style}} ${styleid} .item {transition: .3s ease all}`;
     // }
     if (this.userData.animation === 'lazy') {
-      dism += `${styleid} .item {transition: transform .6s ease;}`;
+      dism += `${ styleid } .item {transition: transform .6s ease;}`;
     }
 
     let itemStyle: string = '';
     if (this.data.type === 'responsive') {
       const itemWidth_xs: string =
         this.userData.type === 'mobile'
-          ? `${styleid} .item {width: ${95 / this.userData.grid.xs}%}`
-          : `${styleid} .item {width: ${100 / this.userData.grid.xs}%}`;
+          ? `${ styleid } .item {width: ${ 95 / this.userData.grid.xs }%}`
+          : `${ styleid } .item {width: ${ 100 / this.userData.grid.xs }%}`;
 
       const itemWidth_sm: string =
         styleid + ' .item {width: ' + 100 / this.userData.grid.sm + '%}';
@@ -422,18 +422,42 @@ export class NgxCarouselComponent
       const itemWidth_lg: string =
         styleid + ' .item {width: ' + 100 / this.userData.grid.lg + '%}';
 
-      itemStyle = `@media (max-width:767px){${itemWidth_xs}}
-                    @media (min-width:768px){${itemWidth_sm}}
-                    @media (min-width:992px){${itemWidth_md}}
-                    @media (min-width:1200px){${itemWidth_lg}}`;
+      itemStyle = `@media (max-width:767px){${ itemWidth_xs }}
+                   @media (min-width:768px){${ itemWidth_sm }}
+                   @media (min-width:992px){${ itemWidth_md }}
+                   @media (min-width:1200px){${ itemWidth_lg }}`;
     } else {
-      itemStyle = `${styleid} .item {width: ${this.userData.grid.all}px}`;
+      itemStyle = `${ styleid } .item {width: ${ this.userData.grid.all }px}`;
     }
 
-    this.renderer.addClass(this.carousel, this.data.classText);
-    const styleItem = this.renderer.createElement(this.carousel, 'style');
+    this.doTheThing(dism, itemStyle);
+  }
+
+
+  private createStyleNode(styleText: string = ''): HTMLStyleElement {
+    const styleChild: HTMLStyleElement = document.createElement('style');
+    styleChild.innerHTML = styleText;
+    // const textNode: Text = document.createTextNode(styleText);
+    // styleChild.appendChild(textNode);
+    this.carousel?.parentElement?.insertBefore(styleChild, this.carousel);
+    return styleChild;
+  }
+
+  private doTheThing(dism: string, itemStyle: string): void {
+    debugger;
     const newStyle: string = `${dism} ${itemStyle}`;
-    (this.renderer as any).createText(styleItem, newStyle);
+    this.renderer.addClass(this.carousel, this.data.classText);
+
+
+    this.createStyleNode(newStyle);
+    //
+    // const styleChild: HTMLStyleElement = document.createElement('style');
+    // const textNode: Text = document.createTextNode(newStyle);
+    // styleChild.appendChild(textNode);
+    // this.carousel?.parentElement?.insertBefore(styleChild, this.carousel);
+    //
+    // // const styleItem = this.renderer.createElement(this.carousel, 'style');
+    // // (this.renderer as any).createText(styleItem, newStyle);
   }
 
   /* logic to scroll the carousel step 1 */
