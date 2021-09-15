@@ -3,7 +3,6 @@
 </nav>
 
 <h2>Banner</h2>
-{{ carouselBannerItems | json }}
 <ngx-carousel class="banner" [inputs]="carouselBanner" (carouselLoad)="carouselBannerLoad()">
     <ngx-item NgxCarouselItem *ngFor="let tile of carouselBannerItems; let i = index;">
         <div class="bannerStyle" [style.background]="'url(' + tile + ')'">
@@ -17,7 +16,6 @@
 <!-- main -->
 <div class="container">
     <h2>Tile</h2>
-  <pre>{{ carouselTileItems | json }}</pre>
     <ngx-carousel [inputs]="carouselTile" (carouselLoad)="carouselTileLoad()">
         <ngx-tile NgxCarouselItem *ngFor="let tile of carouselTileItems; let i = index;">
             <div class="tile" [style.background]="'url(' + tile + ')'">
@@ -29,7 +27,6 @@
     </ngx-carousel>
 
     <h2>Tile-WithLoop and Animation</h2>
-  <pre>{{ carouselTileOneItems | json }}</pre>
     <ngx-carousel [inputs]="carouselTileOne" (carouselLoad)="carouselTileOneLoad()">
         <ngx-tile NgxCarouselItem *ngFor="let tile of carouselTileOneItems; let i = index;">
             <div class="wBg">
@@ -45,7 +42,6 @@
     </ngx-carousel>
 
   <h2>Fixed-Width</h2>
-  <pre>{{ carouselTileTwoItems | json }}</pre>
     <ngx-carousel [inputs]="carouselTileTwo" (carouselLoad)="carouselTileTwoLoad()">
         <ngx-tile NgxCarouselItem *ngFor="let tile of carouselTileTwoItems; let i = index;">
             <div class="wBg">

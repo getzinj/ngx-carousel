@@ -60,8 +60,7 @@ export class NgxCarouselComponent
   private carousel1: ElementRef | undefined;
   @ViewChild('points', { read: ElementRef })
   private pointMain: ElementRef | undefined;
-  @ViewChild('forTouch', { read: ElementRef })
-  private forTouch: ElementRef | undefined;
+  private forTouch: HTMLElement | undefined;
 
   private leftBtn: HTMLButtonElement | undefined;
   private rightBtn: HTMLButtonElement | undefined;
@@ -117,6 +116,7 @@ export class NgxCarouselComponent
     this.carouselMain = this.carouselMain1;
     this.carouselInner1 = this.carouselMain.children.item(0); // TODO: Search by class
     this.carouselInner = this.carouselInner1;
+    this.forTouch = this.carouselInner;
     this.carouselItems = this.carouselInner?.getElementsByClassName('item');
 
     this.data.type = this.userData.grid.all !== 0 ? 'fixed' : 'responsive';
@@ -240,7 +240,7 @@ export class NgxCarouselComponent
   /* Get Touch input */
   private touch(): void {
     if (this.data.touch.active) {
-      const hammertime: HammerManager = new Hammer(this.forTouch?.nativeElement);
+      const hammertime: HammerManager = new Hammer(this.forTouch as HTMLElement);
       hammertime.get('pan').set({ direction: Hammer.DIRECTION_HORIZONTAL });
 
       hammertime.on('panstart', (ev: any): void => {
@@ -645,7 +645,6 @@ export class NgxCarouselComponent
       });
 
       this.renderer.listen('window', 'scroll', (): void => {
-        debugger;
         clearTimeout(this.onScrolling);
         this.onScrolling = setTimeout((): void => {
           this.onWindowScrolling();
