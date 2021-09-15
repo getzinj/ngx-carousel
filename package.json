@@ -1,8 +1,11 @@
 {
-  "name": "ngx-carousel",
+  "name": "ngx-carousel-reborn-demo",
   "version": "2.0.0",
   "description": "Angular Carousel with customizable option with touch support and even more. Try it then say about it",
-  "scripts": {},
+  "scripts": {
+
+  },
+  "private": false,
   "devDependencies": {
     "@angular-devkit/build-angular": "~12.2.5",
     "@angular/cli": "^12.2.5",
