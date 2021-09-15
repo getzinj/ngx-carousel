@@ -1,8 +1,4 @@
-import {
-  NgxCarouselItemDirective,
-  NgxCarouselNextDirective,
-  NgxCarouselPrevDirective
-} from './ngx-carousel.directive';
+import { NgxCarouselItemDirective, NgxCarouselNextDirective, NgxCarouselPrevDirective } from './ngx-carousel.directive';
 import {
   Component,
   ElementRef,
@@ -26,7 +22,7 @@ import {
 
 import { NgxCarouselStore } from './ngx-carousel.interface';
 import { Subscription } from 'rxjs';
-import * as Hammer from 'hammerjs'
+import * as Hammer from 'hammerjs';
 
 @Component({
   selector: 'ngx-carousel',
@@ -58,10 +54,8 @@ export class NgxCarouselComponent
   @ContentChild(NgxCarouselPrevDirective, { read: ElementRef })
   private prev: ElementRef | undefined;
 
-  @ViewChild('ngxcarousel', { read: ElementRef })
-  private carouselMain1: ElementRef | undefined;
-  @ViewChild('ngxitems', { read: ElementRef })
-  private carouselInner1: ElementRef | undefined;
+  private carouselMain1: Element | undefined | null;
+  private carouselInner1: HTMLElement | undefined | null;
   @ViewChild('main', { read: ElementRef })
   private carousel1: ElementRef | undefined;
   @ViewChild('points', { read: ElementRef })
@@ -69,8 +63,8 @@ export class NgxCarouselComponent
   @ViewChild('forTouch', { read: ElementRef })
   private forTouch: ElementRef | undefined;
 
-  private leftBtn: any;
-  private rightBtn: any;
+  private leftBtn: HTMLButtonElement | undefined;
+  private rightBtn: HTMLButtonElement | undefined;
   private evtValue: number | undefined;
   private pauseCarousel: boolean = false;
   private pauseInterval: any;
@@ -112,16 +106,18 @@ export class NgxCarouselComponent
     isLast: false
   };
 
-  constructor(private el: ElementRef, private renderer: Renderer2) {}
+  constructor(private el: ElementRef<HTMLElement>, private renderer: Renderer2) {}
 
   ngOnInit(): void {
     this.carousel = this.el.nativeElement;
-    this.carouselMain = this.carouselMain1?.nativeElement;
-    this.carouselInner = this.carouselInner1?.nativeElement;
-    this.carouselItems = this.carouselInner?.getElementsByClassName('item');
+  }
 
-    this.rightBtn = this.next?.nativeElement;
-    this.leftBtn = this.prev?.nativeElement;
+  ngAfterContentInit(): void {
+    this.carouselMain1 = this.el.nativeElement.children.item(0); // TODO: Search by class
+    this.carouselMain = this.carouselMain1;
+    this.carouselInner1 = this.carouselMain.children.item(0); // TODO: Search by class
+    this.carouselInner = this.carouselInner1;
+    this.carouselItems = this.carouselInner?.getElementsByClassName('item');
 
     this.data.type = this.userData.grid.all !== 0 ? 'fixed' : 'responsive';
     this.data.loop = this.userData.loop || false;
@@ -130,9 +126,10 @@ export class NgxCarouselComponent
 
     this.carouselSize();
     // const datas = this.itemsElements.first.nativeElement.getBoundingClientRect().width;
-  }
 
-  ngAfterContentInit(): void {
+    this.rightBtn = this.next?.nativeElement;
+    this.leftBtn = this.prev?.nativeElement;
+
     this.renderer.listen(this.leftBtn, 'click', (): void =>
       this.carouselScrollOne(0)
     );
@@ -430,35 +427,21 @@ export class NgxCarouselComponent
       itemStyle = `${ styleid } .item {width: ${ this.userData.grid.all }px}`;
     }
 
-    this.doTheThing(dism, itemStyle);
+    this.renderer.addClass(this.carousel, this.data.classText);
+
+    this.createStyleNode(`${dism} ${itemStyle}`);
   }
 
 
   private createStyleNode(styleText: string = ''): HTMLStyleElement {
     const styleChild: HTMLStyleElement = document.createElement('style');
     styleChild.innerHTML = styleText;
-    // const textNode: Text = document.createTextNode(styleText);
-    // styleChild.appendChild(textNode);
+
     this.carousel?.parentElement?.insertBefore(styleChild, this.carousel);
+
     return styleChild;
   }
 
-  private doTheThing(dism: string, itemStyle: string): void {
-    debugger;
-    const newStyle: string = `${dism} ${itemStyle}`;
-    this.renderer.addClass(this.carousel, this.data.classText);
-
-
-    this.createStyleNode(newStyle);
-    //
-    // const styleChild: HTMLStyleElement = document.createElement('style');
-    // const textNode: Text = document.createTextNode(newStyle);
-    // styleChild.appendChild(textNode);
-    // this.carousel?.parentElement?.insertBefore(styleChild, this.carousel);
-    //
-    // // const styleItem = this.renderer.createElement(this.carousel, 'style');
-    // // (this.renderer as any).createText(styleItem, newStyle);
-  }
 
   /* logic to scroll the carousel step 1 */
   private carouselScrollOne(Btn: number): void {
