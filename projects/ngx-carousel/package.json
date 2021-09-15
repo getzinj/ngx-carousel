@@ -1,7 +1,10 @@
 {
   "name": "ngx-carousel-reborn",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "private": false,
+  "homepage": "https://github.com/getzinj/ngx-carousel",
+  "description": "A continuation of sheikalthaf's abandoned project ngx-carousel, updated to support Angular 12.",
+  "license": "MIT",
   "peerDependencies": {
     "@angular/common": "^12.2.0",
     "@angular/core": "^12.2.0",

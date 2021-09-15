@@ -1,11 +1,13 @@
 {
   "name": "ngx-carousel-reborn-demo",
-  "version": "2.0.0",
-  "description": "Angular Carousel with customizable option with touch support and even more. Try it then say about it",
+  "version": "2.0.1",
   "scripts": {
 
   },
   "private": false,
+  "homepage": "https://github.com/getzinj/ngx-carousel",
+  "description": "A continuation of sheikalthaf's abandoned project ngx-carousel, updated to support Angular 12.",
+  "license": "MIT",
   "devDependencies": {
     "@angular-devkit/build-angular": "~12.2.5",
     "@angular/cli": "^12.2.5",
