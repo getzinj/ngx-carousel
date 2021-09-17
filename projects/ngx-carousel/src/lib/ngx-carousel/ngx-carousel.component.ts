@@ -68,16 +68,16 @@ export class NgxCarouselComponent
   private rightBtn: HTMLButtonElement | undefined;
   private evtValue: number | undefined;
   private pauseCarousel: boolean = false;
-  private pauseInterval: any;
+  private pauseInterval: number = undefined as any;
 
-  private carousel: HTMLDivElement | undefined;
+  private carousel: HTMLDivElement = undefined as any;
   private carouselMain: HTMLDivElement = undefined as any;
-  private carouselInner: any;
-  private carouselItems: any;
+  private carouselInner: HTMLDivElement = undefined as any;
+  private carouselItems: HTMLCollectionOf<Element> = undefined as any;
 
-  private onResize: any;
-  private onScrolling: any;
-  private carouselInt: any;
+  private onResize: number = undefined as any;
+  private onScrolling: number = undefined as any;
+  private carouselInt: number = undefined as any;
 
   public pointNumbers: Array<any> = [];
   public data: NgxCarouselStore = {
@@ -337,10 +337,10 @@ export class NgxCarouselComponent
     // if (this.userData.point.visible === true) {
     const Nos: number = (this.items?.length ?? 0) - (this.data.items - this.data.slideItems);
     this.pointIndex = Math.ceil(Nos / this.data.slideItems);
-    const pointers: any[] = [];
+    const pointers: number[] = [];
 
     if (this.pointIndex > 1 || !(this.userData?.point?.hideOnSingleSlide)) {
-      for (let i = 0; i < this.pointIndex; i++) {
+      for (let i: number = 0; i < this.pointIndex; i++) {
         pointers.push(i);
       }
     }
@@ -700,7 +700,7 @@ export class NgxCarouselComponent
       }
     }
     setTimeout((): void => {
-      for (let i = 0; i < (this.items ?? [ ]).length; i++) {
+      for (let i: number = 0; i < (this.items ?? [ ]).length; i++) {
         this.setStyle(this.carouselItems?.[i], 'transform', 'translate3d(0, 0, 0)');
       }
     }, speed * .7);
