@@ -4,7 +4,7 @@ import { NgxCarousel } from '../../projects/ngx-carousel/src/public-api';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: [ './app.component.css' ]
 })
 export class AppComponent implements OnInit {
   imgags: string[] | undefined;

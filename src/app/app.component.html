@@ -1,12 +1,12 @@
 <nav>
-    <h1>Ngx-Carouel</h1>
+    <h1>Ngx-Carousel</h1>
 </nav>
 
 <h2>Banner</h2>
 <ngx-carousel class="banner" [inputs]="carouselBanner" (carouselLoad)="carouselBannerLoad()">
     <ngx-item NgxCarouselItem *ngFor="let tile of carouselBannerItems; let i = index;">
         <div class="bannerStyle" [style.background]="'url(' + tile + ')'">
-            <h1>{{i}}</h1>
+            <h1>{{ i + 1 }}</h1>
         </div>
     </ngx-item>
     <button NgxCarouselPrev class="leftRs">&lt;</button>

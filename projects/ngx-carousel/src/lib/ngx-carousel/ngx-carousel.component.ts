@@ -20,7 +20,7 @@ import {
   SimpleChanges
 } from '@angular/core';
 
-import { NgxCarouselStore } from './ngx-carousel.interface';
+import { NgxCarouselStore, NgxCarousel } from './ngx-carousel.interface';
 import { Subscription } from 'rxjs';
 import * as Hammer from 'hammerjs';
 
@@ -340,7 +340,7 @@ export class NgxCarouselComponent
     this.pointIndex = Math.ceil(Nos / this.data.slideItems);
     const pointers: any[] = [];
 
-    if (this.pointIndex > 1 || !this.userData.point.hideOnSingleSlide) {
+    if (this.pointIndex > 1 || !(this.userData?.point?.hideOnSingleSlide)) {
       for (let i = 0; i < this.pointIndex; i++) {
         pointers.push(i);
       }
