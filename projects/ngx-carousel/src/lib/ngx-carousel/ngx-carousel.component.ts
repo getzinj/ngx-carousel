@@ -32,7 +32,7 @@ import * as Hammer from 'hammerjs';
 export class NgxCarouselComponent
   implements OnInit, AfterContentInit, AfterViewInit, OnDestroy, OnChanges {
   itemsSubscribe: Subscription | undefined;
-  carouselCssNode: any;
+  carouselCssNode: HTMLStyleElement = undefined as any;
   pointIndex: number | undefined;
   pointers: number | undefined;
 
@@ -41,7 +41,7 @@ export class NgxCarouselComponent
   @Input('moveToSlide') moveToSlide: number | undefined;
 
   @Output('carouselLoad') carouselLoad: EventEmitter<number> = new EventEmitter<number>();
-  @Output('onMove') onMove: EventEmitter<any> = new EventEmitter();
+  @Output('onMove') onMove: EventEmitter<NgxCarouselStore> = new EventEmitter<NgxCarouselStore>();
   @Output('afterCarouselViewed') afterCarouselViewed: EventEmitter<NgxCarouselStore> = new EventEmitter<NgxCarouselStore>();
 
   @ContentChildren(NgxCarouselItemDirective)
@@ -79,7 +79,7 @@ export class NgxCarouselComponent
   private onScrolling: number = undefined as any;
   private carouselInt: number = undefined as any;
 
-  public pointNumbers: Array<any> = [];
+  public pointNumbers: number[] = [];
   public data: NgxCarouselStore = {
     type: 'fixed',
     classText: '',
@@ -364,8 +364,7 @@ export class NgxCarouselComponent
 
   /* change the active point in carousel */
   private carouselPointActiver(): void {
-    const i: number = Math.ceil(this.data.currentSlide / this.data.slideItems);
-    this.pointers = i;
+    this.pointers = Math.ceil(this.data.currentSlide / this.data.slideItems);
   }
 
   /* this function is used to scoll the carousel when point is clicked */
@@ -725,7 +724,7 @@ export class NgxCarouselComponent
     }
   }
 
-  private setStyle(el: any, prop: any, val: any): void {
+  private setStyle(el: Element | undefined, prop: string, val: string): void {
     this.renderer.setStyle(el, prop, val);
   }
 }
