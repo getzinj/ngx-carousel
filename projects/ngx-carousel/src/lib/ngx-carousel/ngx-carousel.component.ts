@@ -106,13 +106,16 @@ export class NgxCarouselComponent
     isLast: false
   };
 
-  constructor(private el: ElementRef<HTMLDivElement>, private renderer: Renderer2) {}
 
-  ngOnInit(): void {
+  constructor(private el: ElementRef<HTMLDivElement>, private renderer: Renderer2) { }
+
+
+  public ngOnInit(): void {
     this.carousel = this.el.nativeElement;
   }
 
-  ngAfterContentInit(): void {
+
+  public ngAfterContentInit(): void {
     this.carouselMain = this.el.nativeElement.children.item(0) as HTMLDivElement; // TODO: Search by class
     this.carouselInner = this.carouselMain.getElementsByClassName('ngxcarousel-items')[0] as HTMLDivElement;
     this.forTouch = this.carouselInner;
@@ -124,7 +127,6 @@ export class NgxCarouselComponent
     this.data.touch.active = this.userData?.touch || false;
 
     this.carouselSize();
-    // const datas = this.itemsElements.first.nativeElement.getBoundingClientRect().width;
 
     this.rightBtn = this.next?.nativeElement;
     this.leftBtn = this.prev?.nativeElement;
@@ -150,14 +152,13 @@ export class NgxCarouselComponent
       this.carouselPoint();
       this.buttonControl();
     });
-    // tslint:disable-next-line:no-unused-expression
     if (this.moveToSlide) {
       this.moveTo(this.moveToSlide);
     }
   }
 
 
-  ngAfterViewInit(): void {
+  public ngAfterViewInit(): void {
     if (this.userData?.point?.pointStyles) {
       const datas: string = this.userData.point.pointStyles.replace(
         /.ngxcarouselPoint/g,
@@ -165,7 +166,6 @@ export class NgxCarouselComponent
       );
 
       const pointNode: HTMLStyleElement =  this.createStyleNode(datas);
-//      (this.renderer as any).createText(pointNode, datas);
     } else if (this.userData?.point && this.userData?.point?.visible) {
       this.renderer.addClass(
         this.pointMain?.nativeElement,
@@ -176,26 +176,25 @@ export class NgxCarouselComponent
   }
 
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     clearInterval(this.carouselInt);
-    // tslint:disable-next-line:no-unused-expression
     this.itemsSubscribe?.unsubscribe();
   }
 
+
   @HostListener('window:resize', ['$event'])
-  onResizing(event: UIEvent): void {
+  public onResizing(event: UIEvent): void {
     clearTimeout(this.onResize);
     this.onResize = setTimeout((): void => {
-      // tslint:disable-next-line:no-unused-expression
       if (this.data.deviceWidth !== (event?.target as Window)?.outerWidth) {
         this.storeCarouselData();
       }
     }, 500);
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    // tslint:disable-next-line:no-unused-expression
-    if(this.moveToSlide != null && this.moveToSlide > -1) {
+
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (this.moveToSlide != null && this.moveToSlide > -1) {
       this.moveTo(changes.moveToSlide.currentValue);
     }
   }
@@ -205,7 +204,6 @@ export class NgxCarouselComponent
   private storeCarouselData(): void {
     this.data.deviceWidth = window.innerWidth;
     this.data.carouselWidth = this.carouselMain.offsetWidth;
-    // const datas = this.items.first.nativeElement.getBoundingClientRect().width;
 
     if (this.data.type === 'responsive') {
       this.data.deviceType =
@@ -215,7 +213,19 @@ export class NgxCarouselComponent
             ? 'md'
             : this.data.deviceWidth >= 768 ? 'sm' : 'xs';
 
-      this.data.items = ((this.data.deviceWidth >= 1200 ? this.userData?.grid?.lg : this.data.deviceWidth >= 992 ? this.userData?.grid?.md : this.data.deviceWidth >= 768 ? this.userData?.grid?.sm : this.userData?.grid?.xs)) ?? 1;
+      if (this.data.deviceWidth >= 1200) {
+        this.data.items = this.userData?.grid?.lg ?? 1;
+      } else {
+        if (this.data.deviceWidth >= 992) {
+          this.data.items = this.userData?.grid?.md;
+        } else {
+          if (this.data.deviceWidth >= 768) {
+            this.data.items = this.userData?.grid?.sm;
+          } else {
+            this.data.items = this.userData?.grid?.xs ?? 1;
+          }
+        }
+      }
       this.data.itemWidth = this.data.carouselWidth / this.data.items;
     } else {
       this.data.items = Math.trunc(
@@ -238,26 +248,27 @@ export class NgxCarouselComponent
         : 400;
   }
 
+
   /* Get Touch input */
   private touch(): void {
     if (this.data.touch.active) {
       const hammertime: HammerManager = new Hammer(this.forTouch as HTMLElement);
       hammertime.get('pan').set({ direction: Hammer.DIRECTION_HORIZONTAL });
 
-      hammertime.on('panstart', (ev): void => {
+      hammertime.on('panstart', (ev: HammerInput): void => {
         this.data.carouselWidth = this.carouselInner.offsetWidth;
         this.data.touchTransform = this.data.transform[this.data.deviceType];
 
         this.data.dexVal = 0;
         this.setStyle(this.carouselInner, 'transition', '');
       });
-      hammertime.on('panleft', (ev): void => {
+      hammertime.on('panleft', (ev: HammerInput): void => {
         this.touchHandling('panleft', ev);
       });
-      hammertime.on('panright', (ev): void => {
+      hammertime.on('panright', (ev: HammerInput): void => {
         this.touchHandling('panright', ev);
       });
-      hammertime.on('panend', (ev): void => {
+      hammertime.on('panend', (ev: HammerInput): void => {
         // this.setStyle(this.carouselInner, 'transform', '');
         if (this.data.shouldSlide) {
           this.data.touch.velocity = ev.velocity;
@@ -265,20 +276,21 @@ export class NgxCarouselComponent
             ? this.carouselScrollOne(0)
             : this.carouselScrollOne(1);
         } else {
-           this.data.dexVal = 0;
-           this.data.touchTransform = this.data.transform[this.data.deviceType];
-           this.setStyle(this.carouselInner, 'transition', 'transform 324ms cubic-bezier(0, 0, 0.2, 1)');
-           var tran: number = this.data.touchTransform * -1;
-           this.setStyle(this.carouselInner, 'transform', 'translate3d(' + tran + '%, 0px, 0px)');
+          this.data.dexVal = 0;
+          this.data.touchTransform = this.data.transform[this.data.deviceType];
+          this.setStyle(this.carouselInner, 'transition', 'transform 324ms cubic-bezier(0, 0, 0.2, 1)');
+          const tran: number = this.data.touchTransform * -1;
+          this.setStyle(this.carouselInner, 'transform', 'translate3d(' + tran + '%, 0px, 0px)');
         }
       });
-      hammertime.on("hammer.input", function(ev: HammerInput): void {
+      hammertime.on("hammer.input", (ev: HammerInput): void => {
         // allow nested touch events to no propagate, this may have other side affects but works for now.
         // TODO: It is probably better to check the source element of the event and only apply the handle to the correct carousel
         ev.srcEvent.stopPropagation()
      });
     }
   }
+
 
   /* handle touch input */
   private touchHandling(e: string, ev: HammerInput): void {
@@ -315,6 +327,7 @@ export class NgxCarouselComponent
     }
   }
 
+
   /* this used to disable the scroll when it is not on the display */
   private onWindowScrolling(): void {
     const top: number = this.carousel?.offsetTop ?? 0;
@@ -334,33 +347,6 @@ export class NgxCarouselComponent
 
   /* Init carousel point */
   private carouselPoint(): void {
-    // // if (this.userData.point.visible === true) {
-    // const Nos: number = (this.items?.length ?? 0) - (this.data.items - this.data.slideItems);
-    // this.pointIndex = Math.ceil(Nos / this.data.slideItems);
-    // const pointers: number[] = [];
-    //
-    // if (this.pointIndex > 1 || !(this.userData?.point?.hideOnSingleSlide)) {
-    //   for (let i: number = 0; i < this.pointIndex; i++) {
-    //     pointers.push(i);
-    //   }
-    // }
-    //
-    // this.pointNumbers = pointers;
-    // this.carouselPointActiver();
-    // if (this.pointIndex <= 1) {
-    //   this.btnBoolean(1, 1);
-    //   // this.data.isFirst = true;
-    //   // this.data.isLast = true;
-    // } else {
-    //   if (this.data.currentSlide === 0 && !this.data.loop) {
-    //     this.btnBoolean(1, 0);
-    //   } else {
-    //     this.btnBoolean(0, 0);
-    //   }
-    // }
-    // this.buttonControl();
-    // // }
-
     if (this.data.slideItems === 0) {
       setTimeout((): void => {
         this.carouselPoint();
@@ -377,15 +363,16 @@ export class NgxCarouselComponent
         this.carouselPointActiver()
       });
     }
-
   }
+
 
   /* change the active point in carousel */
   private carouselPointActiver(): void {
     this.pointers = Math.ceil(this.data.currentSlide / this.data.slideItems);
   }
 
-  /* this function is used to scoll the carousel when point is clicked */
+
+  /* this function is used to scroll the carousel when point is clicked */
   public moveTo(index: number): void {
     if ((this.pointers !== index) && (index < (this.pointIndex ?? 0))) {
       let slideremains: number = 0;
@@ -408,41 +395,37 @@ export class NgxCarouselComponent
   /* set the style of the carousel based the inputs data */
   private carouselSize(): void {
     this.data.classText = this.generateID();
-    const styleid: string = '.' + this.data.classText + ' > .ngxcarousel > .ngxcarousel-inner > .ngxcarousel-items >';
+    const styleId: string = '.' + this.data.classText + ' > .ngxcarousel > .ngxcarousel-inner > .ngxcarousel-items >';
 
     if (this.userData?.custom === 'banner') {
       this.renderer.addClass(this.carousel, 'banner');
     }
 
     let dism: string = '';
-    // if (this.userData.animation && this.userData.animation.animateStyles) {
-    //   dism += `${styleid} .customAnimation {${this.userData.animation
-    //     .animateStyles.style}} ${styleid} .item {transition: .3s ease all}`;
-    // }
     if (this.userData?.animation === 'lazy') {
-      dism += `${ styleid } .item {transition: transform .6s ease;}`;
+      dism += `${ styleId } .item {transition: transform .6s ease;}`;
     }
 
     let itemStyle: string = '';
     if (this.data.type === 'responsive') {
       const itemWidth_xs: string =
         this.userData.type === 'mobile'
-          ? `${ styleid } .item {width: ${ 95 / this.userData.grid.xs }%}`
-          : `${ styleid } .item {width: ${ 100 / this.userData.grid.xs }%}`;
+          ? `${ styleId } .item {width: ${ 95 / this.userData.grid.xs }%}`
+          : `${ styleId } .item {width: ${ 100 / this.userData.grid.xs }%}`;
 
       const itemWidth_sm: string =
-        styleid + ' .item {width: ' + 100 / this.userData.grid.sm + '%}';
+        styleId + ' .item {width: ' + 100 / this.userData.grid.sm + '%}';
       const itemWidth_md: string =
-        styleid + ' .item {width: ' + 100 / this.userData.grid.md + '%}';
+        styleId + ' .item {width: ' + 100 / this.userData.grid.md + '%}';
       const itemWidth_lg: string =
-        styleid + ' .item {width: ' + 100 / this.userData.grid.lg + '%}';
+        styleId + ' .item {width: ' + 100 / this.userData.grid.lg + '%}';
 
       itemStyle = `@media (max-width:767px){${ itemWidth_xs }}
                    @media (min-width:768px){${ itemWidth_sm }}
                    @media (min-width:992px){${ itemWidth_md }}
                    @media (min-width:1200px){${ itemWidth_lg }}`;
     } else {
-      itemStyle = `${ styleid } .item {width: ${ this.userData.grid.all }px}`;
+      itemStyle = `${ styleId } .item {width: ${ this.userData.grid.all }px}`;
     }
 
     this.renderer.addClass(this.carousel, this.data.classText);
@@ -523,9 +506,8 @@ export class NgxCarouselComponent
       }
       this.carouselScrollTwo(Btn, currentSlide, itemSpeed);
     }
-
-    // cubic-bezier(0.15, 1.04, 0.54, 1.13)
   }
+
 
   /* logic to scroll the carousel step 2 */
   private carouselScrollTwo(
@@ -535,7 +517,6 @@ export class NgxCarouselComponent
   ): void {
     this.data.visibleItems.start = currentSlide;
     this.data.visibleItems.end = currentSlide + this.data.items - 1;
-    // tslint:disable-next-line:no-unused-expression
     if (this.userData?.animation) {
       this.carouselAnimator(
         Btn,
@@ -546,14 +527,7 @@ export class NgxCarouselComponent
       );
     }
     if (this.data.dexVal !== 0) {
-      // const first = .5;
-      // const second = .50;
-      // tslint:disable-next-line:max-line-length
-      // this.setStyle(this.carouselInner, 'transition', `transform ${itemSpeed}ms ${this.userData.easing}`);
-      // } else {
       const val: number = Math.abs(this.data.touch.velocity);
-      // const first = .7 / val < .5 ? .7 / val : .5;
-      // const second = (2.9 * val / 10 < 1.3) ? (2.9 * val) / 10 : 1.3;
       let somt: number = Math.floor(
         this.data.dexVal /
           val /
@@ -562,9 +536,6 @@ export class NgxCarouselComponent
       );
       somt = somt > itemSpeed ? itemSpeed : somt;
       itemSpeed = somt < 200 ? 200 : somt;
-      // tslint:disable-next-line:max-line-length
-      // this.setStyle(this.carouselInner, 'transition', `transform ${itemSpeed}ms ${this.userData.easing}`);
-      // this.carouselInner.style.transition = `transform ${itemSpeed}ms cubic-bezier(0.15, 1.04, 0.54, 1.13) `;
       this.data.dexVal = 0;
     }
     this.setStyle(
@@ -581,11 +552,13 @@ export class NgxCarouselComponent
     this.buttonControl();
   }
 
+
   /* boolean function for making isFirst and isLast */
   private btnBoolean(first: number, last: number): void {
     this.data.isFirst = !!first;
     this.data.isLast = !!last;
   }
+
 
   /* set the transform style to scroll the carousel  */
   private transformStyle(slide: number): void {
@@ -617,9 +590,10 @@ export class NgxCarouselComponent
         .classText} > .ngxcarousel > .ngxcarousel-inner > .ngxcarousel-items { transform: translate3d(-${this.data
         .transform.all}px, 0, 0);`;
     }
-    // this.renderer.createText(this.carouselCssNode, slideCss);
+
     this.carouselCssNode.innerHTML = slideCss;
   }
+
 
   /* this will trigger the carousel to load the items */
   private carouselLoadTrigger(): void {
@@ -630,6 +604,7 @@ export class NgxCarouselComponent
       }
     }
   }
+
 
   /* generate Class for each carousel to set specific style */
   private generateID(): string {
@@ -642,6 +617,7 @@ export class NgxCarouselComponent
     }
     return `ngxcarousel${text}`;
   }
+
 
   /* handle the auto slide */
   private carouselInterval(): void {
@@ -678,6 +654,7 @@ export class NgxCarouselComponent
     }
   }
 
+
   /* pause interval for specific time */
   private carouselIntervalEvent(ev: number): void {
     this.evtValue = ev;
@@ -694,6 +671,7 @@ export class NgxCarouselComponent
     }
   }
 
+
   /* animate the carousel items */
   private carouselAnimator(direction: number, start: number, end: number, speed: number, length: number): void {
     let val: number = length < 5 ? length : 5;
@@ -702,7 +680,6 @@ export class NgxCarouselComponent
     if (direction === 1) {
       for (let i: number = start - 1; i < end; i++) {
         val = val * 2;
-        // tslint:disable-next-line:no-unused-expression
         if (this.carouselItems?.[i]) {
           this.setStyle(this.carouselItems[i], 'transform', `translate3d(${val}px, 0, 0)`);
         }
@@ -710,7 +687,6 @@ export class NgxCarouselComponent
     } else {
       for (let i: number = end - 1; i >= start - 1; i--) {
         val = val * 2;
-        // tslint:disable-next-line:no-unused-expression
         if (this.carouselItems?.[i]) {
           this.setStyle(this.carouselItems[i], 'transform', `translate3d(-${val}px, 0, 0)`);
         }
@@ -722,6 +698,7 @@ export class NgxCarouselComponent
       }
     }, speed * .7);
   }
+
 
   /* control button for loop */
   private buttonControl(): void {
@@ -741,6 +718,7 @@ export class NgxCarouselComponent
       this.setStyle(this.rightBtn, 'display', 'block');
     }
   }
+
 
   private setStyle(el: Element | undefined, prop: string, val: string): void {
     this.renderer.setStyle(el, prop, val);
