@@ -37,7 +37,7 @@ export class NgxCarouselComponent
   pointers: number | undefined;
 
   // tslint:disable-next-line:no-input-rename
-  @Input('inputs') userData: any;
+  @Input('inputs') userData: NgxCarousel = undefined as any;
   @Input('moveToSlide') moveToSlide: number | undefined;
 
   @Output('carouselLoad') carouselLoad: EventEmitter<number> = new EventEmitter<number>();
@@ -225,16 +225,16 @@ export class NgxCarouselComponent
       this.data.deviceType = 'all';
     }
 
-    this.data.slideItems = +(this.userData.slide < this.data.items
+    this.data.slideItems = !!this.userData.slide && (this.userData.slide < this.data.items)
       ? this.userData.slide
-      : this.data.items);
+      : this.data.items;
     this.data.load =
-      this.userData.load >= this.data.slideItems
+      !!this.userData.load && (this.userData.load >= this.data.slideItems)
         ? this.userData.load
         : this.data.slideItems;
     this.data.speed =
-      this.userData.speed || this.userData.speed > -1
-        ? this.userData.speed
+      this.userData?.speed != null  && this.userData?.speed > -1
+        ? this.userData?.speed
         : 400;
   }
 
