@@ -68,7 +68,7 @@ export class NgxCarouselComponent
   private pauseCarousel: boolean = false;
   private pauseInterval: any;
 
-  private carousel: HTMLElement | undefined;
+  private carousel: HTMLDivElement | undefined;
   private carouselMain: HTMLDivElement = undefined as any;
   private carouselInner: any;
   private carouselItems: any;
@@ -105,7 +105,7 @@ export class NgxCarouselComponent
     isLast: false
   };
 
-  constructor(private el: ElementRef<HTMLElement>, private renderer: Renderer2) {}
+  constructor(private el: ElementRef<HTMLDivElement>, private renderer: Renderer2) {}
 
   ngOnInit(): void {
     this.carousel = this.el.nativeElement;
@@ -437,7 +437,7 @@ export class NgxCarouselComponent
     const styleChild: HTMLStyleElement = document.createElement('style');
     styleChild.innerHTML = styleText;
 
-    this.carousel?.parentElement?.insertBefore(styleChild, this.carousel);
+    this.carousel?.appendChild(styleChild);
 
     return styleChild;
   }
