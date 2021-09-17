@@ -10,16 +10,16 @@ export class AppComponent implements OnInit {
   imgags: string[] | undefined;
 
   public carouselBannerItems: Array<any> = [];
-  public carouselBanner: NgxCarousel | undefined;
+  public carouselBanner: NgxCarousel = undefined as any;
 
   public carouselTileItems: Array<any> = [];
-  public carouselTile: NgxCarousel | undefined;
+  public carouselTile: NgxCarousel = undefined as any;
 
   public carouselTileOneItems: Array<any> = [];
-  public carouselTileOne: NgxCarousel | undefined;
+  public carouselTileOne: NgxCarousel = undefined as any;
 
   public carouselTileTwoItems: Array<any> = [];
-  public carouselTileTwo: NgxCarousel | undefined;
+  public carouselTileTwo: NgxCarousel = undefined as any;
 
   constructor() {}
 
