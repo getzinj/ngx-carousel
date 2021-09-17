@@ -119,10 +119,10 @@ export class NgxCarouselComponent
     this.forTouch = this.carouselInner;
     this.carouselItems = this.carouselInner?.getElementsByClassName('item');
 
-    this.data.type = this.userData.grid.all !== 0 ? 'fixed' : 'responsive';
-    this.data.loop = this.userData.loop || false;
-    this.data.easing = this.userData.easing || 'cubic-bezier(0, 0, 0.2, 1)';
-    this.data.touch.active = this.userData.touch || false;
+    this.data.type = this.userData?.grid?.all !== 0 ? 'fixed' : 'responsive';
+    this.data.loop = this.userData?.loop || false;
+    this.data.easing = this.userData?.easing || 'cubic-bezier(0, 0, 0.2, 1)';
+    this.data.touch.active = this.userData?.touch || false;
 
     this.carouselSize();
     // const datas = this.itemsElements.first.nativeElement.getBoundingClientRect().width;
@@ -144,6 +144,7 @@ export class NgxCarouselComponent
     this.onWindowScrolling();
     this.buttonControl();
     this.touch();
+    this.carouselPoint();
 
     this.itemsSubscribe = this.items?.changes?.subscribe((val): void => {
       this.data.isLast = false;
@@ -157,7 +158,7 @@ export class NgxCarouselComponent
   }
 
   ngAfterViewInit(): void {
-    if (this.userData.point.pointStyles) {
+    if (this.userData?.point?.pointStyles) {
       const datas: string = this.userData.point.pointStyles.replace(
         /.ngxcarouselPoint/g,
         `.${this.data.classText} .ngxcarouselPoint`
@@ -165,7 +166,7 @@ export class NgxCarouselComponent
 
       const pointNode =  this.createStyleNode(datas);
 //      (this.renderer as any).createText(pointNode, datas);
-    } else if (this.userData.point && this.userData.point.visible) {
+    } else if (this.userData?.point && this.userData?.point?.visible) {
       this.renderer.addClass(
         this.pointMain?.nativeElement,
         'ngxcarouselPointDefault'
@@ -214,7 +215,7 @@ export class NgxCarouselComponent
             ? 'md'
             : this.data.deviceWidth >= 768 ? 'sm' : 'xs';
 
-      this.data.items = this.userData.grid[this.data.deviceType];
+      this.data.items = ((this.data.deviceWidth >= 1200 ? this.userData?.grid?.lg : this.data.deviceWidth >= 992 ? this.userData?.grid?.md : this.data.deviceWidth >= 768 ? this.userData?.grid?.sm : this.userData?.grid?.xs)) ?? 1;
       this.data.itemWidth = this.data.carouselWidth / this.data.items;
     } else {
       this.data.items = Math.trunc(
@@ -235,7 +236,6 @@ export class NgxCarouselComponent
       this.userData.speed || this.userData.speed > -1
         ? this.userData.speed
         : 400;
-    this.carouselPoint();
   }
 
   /* Get Touch input */
@@ -393,7 +393,7 @@ export class NgxCarouselComponent
     this.data.classText = this.generateID();
     const styleid: string = '.' + this.data.classText + ' > .ngxcarousel > .ngxcarousel-inner > .ngxcarousel-items >';
 
-    if (this.userData.custom === 'banner') {
+    if (this.userData?.custom === 'banner') {
       this.renderer.addClass(this.carousel, 'banner');
     }
 
@@ -402,7 +402,7 @@ export class NgxCarouselComponent
     //   dism += `${styleid} .customAnimation {${this.userData.animation
     //     .animateStyles.style}} ${styleid} .item {transition: .3s ease all}`;
     // }
-    if (this.userData.animation === 'lazy') {
+    if (this.userData?.animation === 'lazy') {
       dism += `${ styleid } .item {transition: transform .6s ease;}`;
     }
 
@@ -519,7 +519,7 @@ export class NgxCarouselComponent
     this.data.visibleItems.start = currentSlide;
     this.data.visibleItems.end = currentSlide + this.data.items - 1;
     // tslint:disable-next-line:no-unused-expression
-    if (this.userData.animation) {
+    if (this.userData?.animation) {
       this.carouselAnimator(
         Btn,
         currentSlide + 1,
@@ -606,7 +606,7 @@ export class NgxCarouselComponent
 
   /* this will trigger the carousel to load the items */
   private carouselLoadTrigger(): void {
-    if (typeof this.userData.load === 'number') {
+    if (typeof this.userData?.load === 'number') {
       // tslint:disable-next-line:no-unused-expression
       if ((this.items ?? [ ]).length - this.data.load <= this.data.currentSlide + this.data.items) {
         this.carouselLoad.emit(this.data.currentSlide);
@@ -628,7 +628,7 @@ export class NgxCarouselComponent
 
   /* handle the auto slide */
   private carouselInterval(): void {
-    if (typeof this.userData.interval === 'number' && this.data.loop) {
+    if (typeof this.userData?.interval === 'number' && this.data.loop) {
       this.renderer.listen(this.carouselMain, 'touchstart', (): void => {
         this.carouselIntervalEvent(1);
       });
