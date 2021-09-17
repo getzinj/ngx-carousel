@@ -114,7 +114,7 @@ export class NgxCarouselComponent
 
   ngAfterContentInit(): void {
     this.carouselMain = this.el.nativeElement.children.item(0) as HTMLDivElement; // TODO: Search by class
-    this.carouselInner = this.carouselMain.getElementsByClassName('ngxcarousel-items')[0];
+    this.carouselInner = this.carouselMain.getElementsByClassName('ngxcarousel-items')[0] as HTMLDivElement;
     this.forTouch = this.carouselInner;
     this.carouselItems = this.carouselInner?.getElementsByClassName('item');
 
@@ -164,7 +164,7 @@ export class NgxCarouselComponent
         `.${this.data.classText} .ngxcarouselPoint`
       );
 
-      const pointNode =  this.createStyleNode(datas);
+      const pointNode: HTMLStyleElement =  this.createStyleNode(datas);
 //      (this.renderer as any).createText(pointNode, datas);
     } else if (this.userData?.point && this.userData?.point?.visible) {
       this.renderer.addClass(
@@ -244,20 +244,20 @@ export class NgxCarouselComponent
       const hammertime: HammerManager = new Hammer(this.forTouch as HTMLElement);
       hammertime.get('pan').set({ direction: Hammer.DIRECTION_HORIZONTAL });
 
-      hammertime.on('panstart', (ev: any): void => {
+      hammertime.on('panstart', (ev): void => {
         this.data.carouselWidth = this.carouselInner.offsetWidth;
         this.data.touchTransform = this.data.transform[this.data.deviceType];
 
         this.data.dexVal = 0;
         this.setStyle(this.carouselInner, 'transition', '');
       });
-      hammertime.on('panleft', (ev: any): void => {
+      hammertime.on('panleft', (ev): void => {
         this.touchHandling('panleft', ev);
       });
-      hammertime.on('panright', (ev: any): void => {
+      hammertime.on('panright', (ev): void => {
         this.touchHandling('panright', ev);
       });
-      hammertime.on('panend', (ev: any): void => {
+      hammertime.on('panend', (ev): void => {
         // this.setStyle(this.carouselInner, 'transform', '');
         if (this.data.shouldSlide) {
           this.data.touch.velocity = ev.velocity;
@@ -566,8 +566,8 @@ export class NgxCarouselComponent
 
   /* boolean function for making isFirst and isLast */
   private btnBoolean(first: number, last: number): void {
-    this.data.isFirst = first ? true : false;
-    this.data.isLast = last ? true : false;
+    this.data.isFirst = !!first;
+    this.data.isLast = !!last;
   }
 
   /* set the transform style to scroll the carousel  */
@@ -620,7 +620,7 @@ export class NgxCarouselComponent
     const possible: string =
       'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-    for (let i = 0; i < 6; i++) {
+    for (let i: number = 0; i < 6; i++) {
       text += possible.charAt(Math.floor(Math.random() * possible.length));
     }
     return `ngxcarousel${text}`;
@@ -683,7 +683,7 @@ export class NgxCarouselComponent
     val = val === 1 ? 3 : val;
 
     if (direction === 1) {
-      for (let i = start - 1; i < end; i++) {
+      for (let i: number = start - 1; i < end; i++) {
         val = val * 2;
         // tslint:disable-next-line:no-unused-expression
         if (this.carouselItems?.[i]) {
@@ -691,7 +691,7 @@ export class NgxCarouselComponent
         }
       }
     } else {
-      for (let i = end - 1; i >= start - 1; i--) {
+      for (let i: number = end - 1; i >= start - 1; i--) {
         val = val * 2;
         // tslint:disable-next-line:no-unused-expression
         if (this.carouselItems?.[i]) {
