@@ -40,26 +40,28 @@ export class NgxCarouselComponent
   @Input('inputs') userData: any;
   @Input('moveToSlide') moveToSlide: number | undefined;
 
-  @Output('carouselLoad') carouselLoad: EventEmitter<any> = new EventEmitter();
+  @Output('carouselLoad') carouselLoad: EventEmitter<number> = new EventEmitter<number>();
   @Output('onMove') onMove: EventEmitter<any> = new EventEmitter();
-  @Output('afterCarouselViewed') afterCarouselViewed: EventEmitter<any> = new EventEmitter();
+  @Output('afterCarouselViewed') afterCarouselViewed: EventEmitter<NgxCarouselStore> = new EventEmitter<NgxCarouselStore>();
 
   @ContentChildren(NgxCarouselItemDirective)
   private items: QueryList<NgxCarouselItemDirective> | undefined;
+
   @ViewChildren('pointInner', { read: ElementRef })
   private points: QueryList<ElementRef> | undefined;
 
   @ContentChild(NgxCarouselNextDirective, { read: ElementRef })
   private next: ElementRef | undefined;
+
   @ContentChild(NgxCarouselPrevDirective, { read: ElementRef })
   private prev: ElementRef | undefined;
 
-  private carouselMain1: Element | undefined | null;
-  private carouselInner1: HTMLElement | undefined | null;
   @ViewChild('main', { read: ElementRef })
   private carousel1: ElementRef | undefined;
+
   @ViewChild('points', { read: ElementRef })
   private pointMain: ElementRef | undefined;
+
   private forTouch: HTMLElement | undefined;
 
   private leftBtn: HTMLButtonElement | undefined;
@@ -77,7 +79,6 @@ export class NgxCarouselComponent
   private onScrolling: any;
   private carouselInt: any;
 
-  public Arr: ArrayConstructor = Array;
   public pointNumbers: Array<any> = [];
   public data: NgxCarouselStore = {
     type: 'fixed',
@@ -112,10 +113,8 @@ export class NgxCarouselComponent
   }
 
   ngAfterContentInit(): void {
-    this.carouselMain1 = this.el.nativeElement.children.item(0); // TODO: Search by class
-    this.carouselMain = this.carouselMain1 as HTMLDivElement;
-    this.carouselInner1 = this.carouselMain.getElementsByClassName('ngxcarousel-items')[0] as any;
-    this.carouselInner = this.carouselInner1;
+    this.carouselMain = this.el.nativeElement.children.item(0) as HTMLDivElement; // TODO: Search by class
+    this.carouselInner = this.carouselMain.getElementsByClassName('ngxcarousel-items')[0];
     this.forTouch = this.carouselInner;
     this.carouselItems = this.carouselInner?.getElementsByClassName('item');
 
@@ -157,7 +156,7 @@ export class NgxCarouselComponent
     }
   }
 
-  
+
   ngAfterViewInit(): void {
     if (this.userData?.point?.pointStyles) {
       const datas: string = this.userData.point.pointStyles.replace(
