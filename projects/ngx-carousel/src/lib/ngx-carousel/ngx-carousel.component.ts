@@ -69,7 +69,7 @@ export class NgxCarouselComponent
   private pauseInterval: any;
 
   private carousel: HTMLElement | undefined;
-  private carouselMain: any;
+  private carouselMain: HTMLDivElement = undefined as any;
   private carouselInner: any;
   private carouselItems: any;
 
@@ -113,8 +113,8 @@ export class NgxCarouselComponent
 
   ngAfterContentInit(): void {
     this.carouselMain1 = this.el.nativeElement.children.item(0); // TODO: Search by class
-    this.carouselMain = this.carouselMain1;
-    this.carouselInner1 = this.carouselMain.children.item(0); // TODO: Search by class
+    this.carouselMain = this.carouselMain1 as HTMLDivElement;
+    this.carouselInner1 = this.carouselMain.getElementsByClassName('ngxcarousel-items')[0] as any;
     this.carouselInner = this.carouselInner1;
     this.forTouch = this.carouselInner;
     this.carouselItems = this.carouselInner?.getElementsByClassName('item');
