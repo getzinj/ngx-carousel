@@ -116,7 +116,7 @@ export class NgxCarouselComponent
 
 
   public ngAfterContentInit(): void {
-    this.carouselMain = this.el.nativeElement.children.item(0) as HTMLDivElement; // TODO: Search by class
+    this.carouselMain = this.el.nativeElement.getElementsByClassName('ngxcarousel')[0] as HTMLDivElement;
     this.carouselInner = this.carouselMain.getElementsByClassName('ngxcarousel-items')[0] as HTMLDivElement;
     this.forTouch = this.carouselInner;
     this.carouselItems = this.carouselInner?.getElementsByClassName('item');
@@ -379,13 +379,13 @@ export class NgxCarouselComponent
       const btns: number = this.data.currentSlide < index ? 1 : 0;
 
       if (index === 0) {
-        this.btnBoolean(1, 0);
+        this.makeIsFirstAndIsLast(1, 0);
         slideremains = index * this.data.slideItems;
       } else if (index === this.pointIndex ?? 0 - 1) {
-        this.btnBoolean(0, 1);
+        this.makeIsFirstAndIsLast(0, 1);
         slideremains = (this.items ?? [ ]).length - this.data.items;
       } else {
-        this.btnBoolean(0, 0);
+        this.makeIsFirstAndIsLast(0, 0);
         slideremains = index * this.data.slideItems;
       }
       this.carouselScrollTwo(btns, slideremains, this.data.speed);
@@ -462,16 +462,16 @@ export class NgxCarouselComponent
 
       const currentSlideD: number = this.data.currentSlide - this.data.slideItems;
       const MoveSlide: number = currentSlideD + this.data.slideItems;
-      this.btnBoolean(0, 1);
+      this.makeIsFirstAndIsLast(0, 1);
       if (this.data.currentSlide === 0) {
         currentSlide = (this.items ?? [ ]).length - this.data.items;
         itemSpeed = 400;
-        this.btnBoolean(0, 1);
+        this.makeIsFirstAndIsLast(0, 1);
       } else if (this.data.slideItems >= MoveSlide) {
         currentSlide = translateXval = 0;
-        this.btnBoolean(1, 0);
+        this.makeIsFirstAndIsLast(1, 0);
       } else {
-        this.btnBoolean(0, 0);
+        this.makeIsFirstAndIsLast(0, 0);
         if (touchMove > this.data.slideItems) {
           currentSlide = this.data.currentSlide - touchMove;
           itemSpeed = 200;
@@ -487,13 +487,13 @@ export class NgxCarouselComponent
         !this.data.isLast
       ) {
         currentSlide = (this.items ?? [ ]).length - this.data.items;
-        this.btnBoolean(0, 1);
+        this.makeIsFirstAndIsLast(0, 1);
       } else if (this.data.isLast) {
         currentSlide = translateXval = 0;
         itemSpeed = 400;
-        this.btnBoolean(1, 0);
+        this.makeIsFirstAndIsLast(1, 0);
       } else {
-        this.btnBoolean(0, 0);
+        this.makeIsFirstAndIsLast(0, 0);
         if (touchMove > this.data.slideItems) {
           currentSlide =
             this.data.currentSlide +
@@ -544,61 +544,81 @@ export class NgxCarouselComponent
       `transform ${itemSpeed}ms ${this.data.easing}`
     );
     this.data.itemLength = (this.items ?? [ ]).length;
-    this.transformStyle(currentSlide);
+    this.setTheTransformStyleToScrollTheCarousel(currentSlide);
     this.data.currentSlide = currentSlide;
     this.onMove.emit(this.data);
     this.carouselPointActiver();
-    this.carouselLoadTrigger();
+    this.triggerCarouselToLoadItems();
     this.buttonControl();
   }
 
 
-  /* boolean function for making isFirst and isLast */
-  private btnBoolean(first: number, last: number): void {
+  private makeIsFirstAndIsLast(first: number, last: number): void {
     this.data.isFirst = !!first;
     this.data.isLast = !!last;
   }
 
 
-  /* set the transform style to scroll the carousel  */
-  private transformStyle(slide: number): void {
-    let slideCss: string = '';
+  private setTheTransformStyleToScrollTheCarousel(slide: number): void {
     if (this.data.type === 'responsive') {
-      this.data.transform.xs = 100 / this.userData.grid.xs * slide;
-      this.data.transform.sm = 100 / this.userData.grid.sm * slide;
-      this.data.transform.md = 100 / this.userData.grid.md * slide;
-      this.data.transform.lg = 100 / this.userData.grid.lg * slide;
-      slideCss = `@media (max-width: 767px) {
-              .${this.data
-                .classText} > .ngxcarousel > .ngxcarousel-inner > .ngxcarousel-items { transform: translate3d(-${this
-        .data.transform.xs}%, 0, 0); } }
-            @media (min-width: 768px) {
-              .${this.data
-                .classText} > .ngxcarousel > .ngxcarousel-inner > .ngxcarousel-items { transform: translate3d(-${this
-        .data.transform.sm}%, 0, 0); } }
-            @media (min-width: 992px) {
-              .${this.data
-                .classText} > .ngxcarousel > .ngxcarousel-inner > .ngxcarousel-items { transform: translate3d(-${this
-        .data.transform.md}%, 0, 0); } }
-            @media (min-width: 1200px) {
-              .${this.data
-                .classText} > .ngxcarousel > .ngxcarousel-inner > .ngxcarousel-items { transform: translate3d(-${this
-        .data.transform.lg}%, 0, 0); } }`;
+      this.setResponsiveTransforms(slide);
+      this.carouselCssNode.innerHTML = this.getResponsiveSlideCSS();
     } else {
-      this.data.transform.all = this.userData.grid.all * slide;
-      slideCss = `.${this.data
-        .classText} > .ngxcarousel > .ngxcarousel-inner > .ngxcarousel-items { transform: translate3d(-${this.data
-        .transform.all}px, 0, 0);`;
+      this.setNonResponsiveTransforms(slide);
+      this.carouselCssNode.innerHTML = this.getNonResponsiveSlideCSS();
     }
-
-    this.carouselCssNode.innerHTML = slideCss;
   }
 
 
-  /* this will trigger the carousel to load the items */
-  private carouselLoadTrigger(): void {
+  private getNonResponsiveSlideCSS(): `.${string} > .ngxcarousel > .ngxcarousel-inner > .ngxcarousel-items { transform: translate3d(-${number}px, 0, 0);` {
+    return `.${this.data
+      .classText} > .ngxcarousel > .ngxcarousel-inner > .ngxcarousel-items { transform: translate3d(-${this.data
+      .transform.all}px, 0, 0);`;
+  }
+
+
+  private getResponsiveSlideCSS(): `@media (max-width: 767px) {
+              .${string} > .ngxcarousel > .ngxcarousel-inner > .ngxcarousel-items { transform: translate3d(-${number}%, 0, 0); } }
+            @media (min-width: 768px) {
+              .${string} > .ngxcarousel > .ngxcarousel-inner > .ngxcarousel-items { transform: translate3d(-${number}%, 0, 0); } }
+            @media (min-width: 992px) {
+              .${string} > .ngxcarousel > .ngxcarousel-inner > .ngxcarousel-items { transform: translate3d(-${number}%, 0, 0); } }
+            @media (min-width: 1200px) {
+              .${string} > .ngxcarousel > .ngxcarousel-inner > .ngxcarousel-items { transform: translate3d(-${number}%, 0, 0); } }` {
+    return `@media (max-width: 767px) {
+              .${this.data
+      .classText} > .ngxcarousel > .ngxcarousel-inner > .ngxcarousel-items { transform: translate3d(-${this
+      .data.transform.xs}%, 0, 0); } }
+            @media (min-width: 768px) {
+              .${this.data
+      .classText} > .ngxcarousel > .ngxcarousel-inner > .ngxcarousel-items { transform: translate3d(-${this
+      .data.transform.sm}%, 0, 0); } }
+            @media (min-width: 992px) {
+              .${this.data
+      .classText} > .ngxcarousel > .ngxcarousel-inner > .ngxcarousel-items { transform: translate3d(-${this
+      .data.transform.md}%, 0, 0); } }
+            @media (min-width: 1200px) {
+              .${this.data
+      .classText} > .ngxcarousel > .ngxcarousel-inner > .ngxcarousel-items { transform: translate3d(-${this
+      .data.transform.lg}%, 0, 0); } }`;
+  }
+
+
+  private setNonResponsiveTransforms(slide: number): void {
+    this.data.transform.all = this.userData.grid.all * slide;
+  }
+
+
+  private setResponsiveTransforms(slide: number): void {
+    this.data.transform.xs = 100 / this.userData.grid.xs * slide;
+    this.data.transform.sm = 100 / this.userData.grid.sm * slide;
+    this.data.transform.md = 100 / this.userData.grid.md * slide;
+    this.data.transform.lg = 100 / this.userData.grid.lg * slide;
+  }
+
+
+  private triggerCarouselToLoadItems(): void {
     if (typeof this.userData?.load === 'number') {
-      // tslint:disable-next-line:no-unused-expression
       if ((this.items ?? [ ]).length - this.data.load <= this.data.currentSlide + this.data.items) {
         this.carouselLoad.emit(this.data.currentSlide);
       }
@@ -646,7 +666,6 @@ export class NgxCarouselComponent
       });
 
       this.carouselInt = setInterval((): void => {
-        // tslint:disable-next-line:no-unused-expression
         if (!this.pauseCarousel) {
           this.carouselScrollOne(1);
         }
@@ -661,7 +680,6 @@ export class NgxCarouselComponent
     if (this.evtValue === 0) {
       clearTimeout(this.pauseInterval);
       this.pauseInterval = setTimeout((): void => {
-        // tslint:disable-next-line:no-unused-expression
         if (this.evtValue === 0) {
           this.pauseCarousel = false;
         }
