@@ -183,11 +183,11 @@ export class NgxCarouselComponent
   }
 
   @HostListener('window:resize', ['$event'])
-  onResizing(event: any): void {
+  onResizing(event: UIEvent): void {
     clearTimeout(this.onResize);
     this.onResize = setTimeout((): void => {
       // tslint:disable-next-line:no-unused-expression
-      if (this.data.deviceWidth !== event.target.outerWidth) {
+      if (this.data.deviceWidth !== (event?.target as Window)?.outerWidth) {
         this.storeCarouselData();
       }
     }, 500);
@@ -281,34 +281,34 @@ export class NgxCarouselComponent
   }
 
   /* handle touch input */
-  private touchHandling(e: string, ev: any): void {
+  private touchHandling(e: string, ev: HammerInput): void {
 
     // vertical touch events seem to cause to panstart event with an odd delta
     // and a center of {x:0,y:0} so this will ignore them
     if (ev.center.x === 0) { return }
 
-    ev = Math.abs(ev.deltaX);
-    let valt: number = ev - this.data.dexVal;
+    const deltaX: number = Math.abs(ev.deltaX);
+    let valt: number = deltaX - this.data.dexVal;
     valt =
       this.data.type === 'responsive'
-        ? Math.abs(ev - this.data.dexVal) / this.data.carouselWidth * 100
+        ? Math.abs(deltaX - this.data.dexVal) / this.data.carouselWidth * 100
         : valt;
-    this.data.dexVal = ev;
+    this.data.dexVal = deltaX;
     this.data.touch.swipe = e;
     this.data.touchTransform =
       e === 'panleft'
         ? valt + this.data.touchTransform
         : this.data.touchTransform - valt;
 
-    this.data.shouldSlide = (ev > this.data.carouselWidth * 0.1);
+    this.data.shouldSlide = (deltaX > this.data.carouselWidth * 0.1);
 
     if (this.data.touchTransform > 0) {
       this.setStyle(
         this.carouselInner,
         'transform',
         this.data.type === 'responsive'
-          ? `translate3d(-${this.data.touchTransform}%, 0px, 0px)`
-          : `translate3d(-${this.data.touchTransform}px, 0px, 0px)`
+          ? `translate3d(-${ this.data.touchTransform }%, 0px, 0px)`
+          : `translate3d(-${ this.data.touchTransform }px, 0px, 0px)`
       );
     } else {
       this.data.touchTransform = 0;
@@ -446,8 +446,8 @@ export class NgxCarouselComponent
   /* logic to scroll the carousel step 1 */
   private carouselScrollOne(Btn: number): void {
     let itemSpeed: number = this.data.speed;
-    let translateXval,
-      currentSlide: number = 0;
+    let translateXval;
+    let currentSlide: number = 0;
     const touchMove: number = Math.ceil(this.data.dexVal / this.data.itemWidth);
     this.setStyle(this.carouselInner, 'transform', '');
 
