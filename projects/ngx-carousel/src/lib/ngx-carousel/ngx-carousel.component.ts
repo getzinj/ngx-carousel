@@ -334,32 +334,50 @@ export class NgxCarouselComponent
 
   /* Init carousel point */
   private carouselPoint(): void {
-    // if (this.userData.point.visible === true) {
-    const Nos: number = (this.items?.length ?? 0) - (this.data.items - this.data.slideItems);
-    this.pointIndex = Math.ceil(Nos / this.data.slideItems);
-    const pointers: number[] = [];
-
-    if (this.pointIndex > 1 || !(this.userData?.point?.hideOnSingleSlide)) {
-      for (let i: number = 0; i < this.pointIndex; i++) {
-        pointers.push(i);
-      }
-    }
-
-    this.pointNumbers = pointers;
-    this.carouselPointActiver();
-    if (this.pointIndex <= 1) {
-      this.btnBoolean(1, 1);
-      // this.data.isFirst = true;
-      // this.data.isLast = true;
-    } else {
-      if (this.data.currentSlide === 0 && !this.data.loop) {
-        this.btnBoolean(1, 0);
-      } else {
-        this.btnBoolean(0, 0);
-      }
-    }
-    this.buttonControl();
+    // // if (this.userData.point.visible === true) {
+    // const Nos: number = (this.items?.length ?? 0) - (this.data.items - this.data.slideItems);
+    // this.pointIndex = Math.ceil(Nos / this.data.slideItems);
+    // const pointers: number[] = [];
+    //
+    // if (this.pointIndex > 1 || !(this.userData?.point?.hideOnSingleSlide)) {
+    //   for (let i: number = 0; i < this.pointIndex; i++) {
+    //     pointers.push(i);
+    //   }
     // }
+    //
+    // this.pointNumbers = pointers;
+    // this.carouselPointActiver();
+    // if (this.pointIndex <= 1) {
+    //   this.btnBoolean(1, 1);
+    //   // this.data.isFirst = true;
+    //   // this.data.isLast = true;
+    // } else {
+    //   if (this.data.currentSlide === 0 && !this.data.loop) {
+    //     this.btnBoolean(1, 0);
+    //   } else {
+    //     this.btnBoolean(0, 0);
+    //   }
+    // }
+    // this.buttonControl();
+    // // }
+
+    if (this.data.slideItems === 0) {
+      setTimeout((): void => {
+        this.carouselPoint();
+      }, 10);
+    } else if (this.userData?.point?.visible) {
+      const e: number = (this.items?.length ?? 0) - (this.data.items - this.data.slideItems);
+      this.pointIndex = Math.ceil(e / this.data.slideItems);
+      const n: number[] = [];
+      for (let r: number = 0; r < this.pointIndex; r++) {
+        n.push(r);
+      }
+      this.pointNumbers = n;
+      setTimeout((): void => {
+        this.carouselPointActiver()
+      });
+    }
+
   }
 
   /* change the active point in carousel */

@@ -69,7 +69,7 @@ export class AppComponent implements OnInit {
       load: 2,
       custom: 'banner',
       touch: true,
-      loop: false,
+      loop: true,
       easing: 'cubic-bezier(0, 0, 0.2, 1)'
     };
 
