@@ -174,6 +174,7 @@ export class NgxCarouselComponent
     this.afterCarouselViewed.emit(this.data);
   }
 
+  
   ngOnDestroy(): void {
     clearInterval(this.carouselInt);
     // tslint:disable-next-line:no-unused-expression
